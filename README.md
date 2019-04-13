@@ -1,5 +1,5 @@
 # docker-worker
-EC2 worker instance with installed Docker, configured SSH access and public IP address to connect
+Terraform module: EC2 worker instance with installed Docker, configured SSH access and public IP address to connect
 
 ## Before
 Before using this terraform module make sure you have
