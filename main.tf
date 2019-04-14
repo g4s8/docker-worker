@@ -42,12 +42,7 @@ resource "aws_instance" "worker" {
     agent = true
   }
   provisioner "remote-exec" {
-    inline = [
-      "sudo yum update -y",
-      "sudo yum install docker -y",
-      "sudo service docker start",
-      "sudo usermod -a -G docker ec2-user",
-    ]
+    scripts = "${concat(list("${path.module}/init.sh"), var.init_scripts)}"
   }
   tags = {
     Name = "${var.tag_name}"

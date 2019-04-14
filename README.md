@@ -1,9 +1,31 @@
 # docker-worker
 Terraform module: EC2 worker instance with installed Docker, configured SSH access and public IP address to connect
 
-## Before
+## Why
+I'm creating AWS EC2 instance just to run some Docker image quite often,
+after run I'm terminating this instance, because it's not needed anymore.
+To create new instance I'm always following same steps:
+ 1. Start new instance, configure it's type, disk size
+ 2. Configure security groups
+ 3. Create public IP
+ 4. Configure SSH connection
+ 5. SSH into instance and install docker
+
+I've found a way to automate all these steps using Terraform,
+this module starts new instance, configures SSH using my local public key,
+configures security groups and IP address, installs Docker to this instance
+and configures access for `ec2-user` just in one command:
+```bash
+terraform apply
+```
+also it's flexible enough to configure EC2 type and disk size or to
+run my local scripts after installation.
+
+
+## Before start
 Before using this terraform module make sure you have
-[Terraform installed](https://learn.hashicorp.com/terraform/getting-started/install.html) also you'll need to create SSH key pair and
+[Terraform installed](https://learn.hashicorp.com/terraform/getting-started/install.html)
+also you'll need to create SSH key pair and
 add this key to ssh-agent for EC2 instance provisioning.
 If you don't have existing key-pair, use `ssh-keygen` command to generate new,
 for example to create new key-pair with default params and `test` name use:
@@ -19,17 +41,23 @@ and add private key to ssh-agent:
 eval $(ssh-agent)
 ssh-add ./test
 ```
-## Usage
+## Configuration
 Variables to configure:
 
-| Name            | Type     | Required | Default           | Destription |
-|-----------------|----------|----------|-------------------|-------------|
-| `instance_type` | `string` | no       | `"t2.micro"`      | EC2 instance type |
-| `disk_size`     | `number` | no       | `8`               | EC2 instance root disk size in GB |
-| `tag_name`      | `string` | no       | `"docker-worker"` | AWS tag `Name` which will be added to each resource |
-| `ssh_pub_key`   | `string` | yes      | -                 | SSH public key |
-| `aws_zone`      | `string` | yes      | -                 | AWS availability zone, e.g. `us-east-2a` |
+| Name            | Type     | Required | Default           | Destription                                               |
+|-----------------|----------|----------|-------------------|-----------------------------------------------------------|
+| `instance_type` | `string` | no       | `"t2.micro"`      | EC2 instance type                                         |
+| `disk_size`     | `number` | no       | `8`               | EC2 instance root disk size in GB                         |
+| `tag_name`      | `string` | no       | `"docker-worker"` | AWS tag `Name` which will be added to each resource       |
+| `ssh_pub_key`   | `string` | yes      | -                 | SSH public key                                            |
+| `aws_zone`      | `string` | yes      | -                 | AWS availability zone, e.g. `us-east-2a`                  |
+| `init_scripts`  | `list`   | no       | `[]`              | List of paths to scripts to run on setup when creating    |
 
+
+## Example
+*Check example in
+[./example](https://github.com/g4s8/docker-worker/tree/master/example)
+directory.*
 
 Add module to your `.tf` file:
 ```terraform
@@ -45,6 +73,7 @@ module "my-worker" {
   instance_type = "t2.medium"
   disk_size = 64
   tag_name = "my-worker"
+  init_scripts = "${list("./init.sh")}"
 }
 
 output "public-ip" {

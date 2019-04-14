@@ -23,6 +23,7 @@ module "docker-builder" {
   tag_name = "docker-builder"
   ssh_pub_key = "${var.ssh_pub_key}"
   aws_zone = "us-east-2a"
+  init_scripts = "${list("./init.sh")}"
 }
 
 output "public-ip" {

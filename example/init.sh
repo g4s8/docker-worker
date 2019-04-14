@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # MIT License
 #
 # Copyright (c) 2019 Kirill
@@ -20,30 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-variable "instance_type" {
-  description = "EC2 instance type, e.g. `t2.medium`"
-  default = "t2.micro"
-}
+set -e
+set -x
 
-variable "disk_size" {
-  description = "EC2 root disk size GB"
-  default = 8
-}
-
-variable "tag_name" {
-  description = "Tag name"
-  default = "worker"
-}
-
-variable "ssh_pub_key" {
-  description = "SSH public key"
-}
-
-variable "aws_zone" {
-  description = "AWS zone"
-}
-
-variable "init_scripts" {
-  description = "Shell scripts to run on create"
-  default = []
-}
+echo "test" > "/home/ec2-user/test.txt"
