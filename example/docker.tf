@@ -20,6 +20,7 @@ provider "aws" {
 
 module "docker-builder" {
   source = "github.com/g4s8/docker-worker"
+  instance_type = "t2.nano"
   tag_name = "docker-builder"
   ssh_pub_key = "${var.ssh_pub_key}"
   aws_zone = "us-east-2a"

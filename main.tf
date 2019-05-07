@@ -34,6 +34,7 @@ resource "aws_instance" "worker" {
   availability_zone = "${var.aws_zone}"
   key_name = "${local.ssh_key_pair}"
   security_groups = ["${aws_security_group.worker.name}"] 
+  iam_instance_profile = "${var.iam_profile_name}"
   root_block_device {
     volume_size = "${var.disk_size}"
   }

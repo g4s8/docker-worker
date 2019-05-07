@@ -47,3 +47,8 @@ variable "init_scripts" {
   description = "Shell scripts to run on create"
   default = []
 }
+
+variable "iam_profile_name" {
+  description = "IAM instance profile name"
+  default = ""
+}
